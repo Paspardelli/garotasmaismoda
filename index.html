@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Garota Mais | Moda Plus Size em Americana-SP</title>
+  <meta name="description" content="Garota Mais: moda feminina plus size, tamanhos P ao G2. Looks para valorizar sua beleza. Pátio 330, Americana-SP.">
+  <meta name="theme-color" content="#7a2e3b">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Jost:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <!-- Barra de avisos -->
+  <div class="topbar">
+    <div class="topbar__track">
+      <span>BLACK FRIDAY: LOJA TODA COM ATÉ 50% OFF</span>
+      <span>Retire na loja · Pátio 330, Americana-SP</span>
+      <span>Tamanhos P ao G2</span>
+      <span>Peça pelo WhatsApp</span>
+    </div>
+  </div>
+
+  <!-- Header -->
+  <header class="header" id="header">
+    <div class="container header__inner">
+      <button class="icon-btn menu-toggle" id="menuToggle" aria-label="Abrir menu">
+        <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
+      </button>
+
+      <a href="#inicio" class="logo" aria-label="Garota Mais">
+        <span class="logo__name">GAROTA MAIS</span>
+        <span class="logo__tag">Seja Mais. Seja Você!</span>
+      </a>
+
+      <nav class="nav" id="nav">
+        <a href="#categorias">Categorias</a>
+        <a href="#catalogo">Produtos</a>
+        <a href="#blackfriday" class="nav__hot">Black Friday</a>
+        <a href="#vip">Grupo VIP</a>
+        <a href="#loja">A Loja</a>
+        <a href="#contato">Contato</a>
+      </nav>
+
+      <div class="header__actions">
+        <button class="icon-btn" id="searchToggle" aria-label="Buscar">
+          <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>
+        </button>
+        <button class="icon-btn cart-btn" id="cartToggle" aria-label="Abrir sacola">
+          <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M5 8h14l-1 12H6L5 8z"/><path d="M9 8V6a3 3 0 0 1 6 0v2"/></svg>
+          <span class="cart-count" id="cartCount">0</span>
+        </button>
+      </div>
+    </div>
+
+    <div class="searchbar" id="searchbar">
+      <div class="container">
+        <input type="search" id="searchInput" placeholder="Buscar vestido, calça, conjunto..." autocomplete="off">
+      </div>
+    </div>
+  </header>
+
+  <main id="inicio">
+
+    <!-- Hero -->
+    <section class="hero">
+      <div class="container hero__inner">
+        <div class="hero__text">
+          <span class="eyebrow">Moda Plus · Americana-SP</span>
+          <h1>Looks para valorizar a sua <em>beleza</em></h1>
+          <p>Moda feminina do P ao G2, com caimento, conforto e estilo para todos os momentos do seu dia.</p>
+          <div class="hero__cta">
+            <a href="#catalogo" class="btn btn--primary">Ver coleção</a>
+            <a href="#blackfriday" class="btn btn--ghost">Black Friday 50% OFF</a>
+          </div>
+        </div>
+        <div class="hero__visual" aria-hidden="true">
+          <div class="hero__card hero__card--a"><span>Nova Coleção</span></div>
+          <div class="hero__card hero__card--b"><span>Esquenta<br>Black Friday</span></div>
+          <div class="hero__badge"><strong>50%</strong><small>OFF</small></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Benefícios -->
+    <section class="benefits">
+      <div class="container benefits__grid">
+        <div class="benefit">
+          <svg viewBox="0 0 24 24" width="30" height="30" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M12 21s-7-6.2-7-11a7 7 0 0 1 14 0c0 4.8-7 11-7 11z"/><circle cx="12" cy="10" r="2.5"/></svg>
+          <div><strong>Retire na loja</strong><span>Pátio 330, Americana-SP</span></div>
+        </div>
+        <div class="benefit">
+          <svg viewBox="0 0 24 24" width="30" height="30" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M4 5h16v11H8l-4 4V5z"/></svg>
+          <div><strong>Atendimento no WhatsApp</strong><span>Tire dúvidas e feche seu pedido</span></div>
+        </div>
+        <div class="benefit">
+          <svg viewBox="0 0 24 24" width="30" height="30" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M12 3l2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.9 1-6.1L3.2 9.5l6.1-.9L12 3z"/></svg>
+          <div><strong>Do P ao G2</strong><span>Grade pensada para você</span></div>
+        </div>
+        <div class="benefit">
+          <svg viewBox="0 0 24 24" width="30" height="30" fill="none" stroke="currentColor" stroke-width="1.4"><rect x="3" y="8" width="18" height="12" rx="1"/><path d="M12 8v12M3 12h18M12 8c-2-4-6-3-5 0M12 8c2-4 6-3 5 0"/></svg>
+          <div><strong>Sorteios e Grupo VIP</strong><span>Ofertas antes de todo mundo</span></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Categorias -->
+    <section class="section" id="categorias">
+      <div class="container">
+        <div class="section__head">
+          <span class="eyebrow">Navegue por estilo</span>
+          <h2>Categorias</h2>
+        </div>
+        <div class="cats" id="catsGrid"></div>
+      </div>
+    </section>
+
+    <!-- Black Friday -->
+    <section class="bf" id="blackfriday">
+      <div class="container bf__inner">
+        <div class="bf__text">
+          <span class="bf__eyebrow">Já começou o maior</span>
+          <h2>BLACK <span>FRIDAY</span></h2>
+          <p>De moda feminina do Slim ao Plus Size. A loja toda com até</p>
+          <div class="bf__big">50<small>%</small><em>OFF</em></div>
+          <small class="bf__note">*Desconto não se acumula com outras promoções. Válido a partir de 07/11.</small>
+          <a href="#catalogo" class="btn btn--gold" data-filter-sale>Ver ofertas</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- Catálogo -->
+    <section class="section" id="catalogo">
+      <div class="container">
+        <div class="section__head">
+          <span class="eyebrow">Peças selecionadas</span>
+          <h2>Nossos produtos</h2>
+        </div>
+
+        <div class="toolbar">
+          <div class="chips" id="catChips"></div>
+          <div class="toolbar__right">
+            <label class="select">
+              <span>Tamanho</span>
+              <select id="sizeFilter">
+                <option value="">Todos</option>
+                <option>P</option><option>M</option><option>G</option><option>G1</option><option>G2</option>
+              </select>
+            </label>
+            <label class="select">
+              <span>Ordenar</span>
+              <select id="sortFilter">
+                <option value="relevancia">Destaques</option>
+                <option value="menor">Menor preço</option>
+                <option value="maior">Maior preço</option>
+                <option value="desconto">Maior desconto</option>
+              </select>
+            </label>
+          </div>
+        </div>
+
+        <p class="results" id="resultsInfo"></p>
+        <div class="grid" id="productGrid"></div>
+        <div class="empty" id="emptyState" hidden>
+          <p>Nenhuma peça encontrada com esses filtros.</p>
+          <button class="btn btn--ghost" id="clearFilters">Limpar filtros</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Grupo VIP -->
+    <section class="vip" id="vip">
+      <div class="container vip__inner">
+        <div>
+          <span class="eyebrow eyebrow--light">Exclusivo</span>
+          <h2>Entre para o Grupo VIP</h2>
+          <p>Receba lançamentos, promoções relâmpago e sorteios em primeira mão direto no seu WhatsApp.</p>
+        </div>
+        <a href="#" class="btn btn--light" id="vipLink" target="_blank" rel="noopener">Quero entrar no grupo</a>
+      </div>
+    </section>
+
+    <!-- A loja -->
+    <section class="section section--soft" id="loja">
+      <div class="container about">
+        <div class="about__img" aria-hidden="true">
+          <span>GAROTA<br>MAIS</span>
+        </div>
+        <div class="about__text">
+          <span class="eyebrow">Nossa história</span>
+          <h2>Seja Mais. Seja Você!</h2>
+          <p>A Garota Mais nasceu para vestir mulheres reais com respeito, elegância e atitude. Cada peça é escolhida para valorizar suas curvas, com modelagens confortáveis e tendências que acompanham o seu estilo.</p>
+          <p>Visite nossa loja no Pátio 330, em Americana, experimente com calma e conte com um atendimento próximo.</p>
+          <ul class="about__list">
+            <li>Moda feminina do P ao G2</li>
+            <li>Looks para trabalho, festas, casamentos e dia a dia</li>
+            <li>Nova coleção toda semana</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- Depoimentos -->
+    <section class="section">
+      <div class="container">
+        <div class="section__head">
+          <span class="eyebrow">Quem usa, aprova</span>
+          <h2>Clientes Garota Mais</h2>
+        </div>
+        <div class="testi">
+          <figure class="testi__card">
+            <div class="stars">★★★★★</div>
+            <blockquote>Amei o atendimento e o caimento das peças. Saí da loja me sentindo linda!</blockquote>
+            <figcaption>Cliente da loja</figcaption>
+          </figure>
+          <figure class="testi__card">
+            <div class="stars">★★★★★</div>
+            <blockquote>Finalmente encontrei vestido para casamento que serviu perfeito.</blockquote>
+            <figcaption>Cliente da loja</figcaption>
+          </figure>
+          <figure class="testi__card">
+            <div class="stars">★★★★★</div>
+            <blockquote>Peço pelo WhatsApp e é super rápido. Sempre tem novidade!</blockquote>
+            <figcaption>Cliente da loja</figcaption>
+          </figure>
+        </div>
+      </div>
+    </section>
+
+    <!-- Contato -->
+    <section class="section section--soft" id="contato">
+      <div class="container contact">
+        <div>
+          <span class="eyebrow">Fale com a gente</span>
+          <h2>Venha nos visitar</h2>
+          <ul class="contact__list">
+            <li><strong>Endereço</strong> Pátio 330 · Av. Afonso Pansan, 175 · Bertini · Americana-SP</li>
+            <li><strong>Instagram</strong> <a href="https://www.instagram.com/garotamaismodas" target="_blank" rel="noopener">@garotamaismodas</a></li>
+            <li><strong>WhatsApp</strong> <a href="#" id="contactWhats" target="_blank" rel="noopener">Chamar agora</a></li>
+          </ul>
+          <a href="https://www.google.com/maps/search/?api=1&query=Patio+330+Americana+SP" class="btn btn--primary" target="_blank" rel="noopener">Ver no mapa</a>
+        </div>
+        <form class="form" id="contactForm">
+          <h3>Envie uma mensagem</h3>
+          <input type="text" id="cfName" placeholder="Seu nome" required>
+          <textarea id="cfMsg" rows="4" placeholder="Como podemos ajudar?" required></textarea>
+          <button type="submit" class="btn btn--primary">Enviar pelo WhatsApp</button>
+        </form>
+      </div>
+    </section>
+  </main>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container footer__inner">
+      <div>
+        <div class="logo logo--light"><span class="logo__name">GAROTA MAIS</span><span class="logo__tag">Seja Mais. Seja Você!</span></div>
+        <p>Moda feminina plus size em Americana-SP.</p>
+      </div>
+      <div>
+        <h4>Navegue</h4>
+        <a href="#catalogo">Produtos</a>
+        <a href="#blackfriday">Black Friday</a>
+        <a href="#vip">Grupo VIP</a>
+        <a href="#loja">A Loja</a>
+      </div>
+      <div>
+        <h4>Atendimento</h4>
+        <a href="#contato">Contato</a>
+        <a href="https://www.instagram.com/garotamaismodas" target="_blank" rel="noopener">Instagram</a>
+        <a href="#" id="footerWhats" target="_blank" rel="noopener">WhatsApp</a>
+      </div>
+    </div>
+    <div class="footer__bottom">© <span id="year"></span> Garota Mais. Todos os direitos reservados.</div>
+  </footer>
+
+  <!-- WhatsApp flutuante -->
+  <a href="#" class="whats-float" id="whatsFloat" target="_blank" rel="noopener" aria-label="Falar no WhatsApp">
+    <svg viewBox="0 0 24 24" width="28" height="28" fill="currentColor"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2zm5.2 14.2c-.2.6-1.2 1.2-1.7 1.2-.5.1-1 .2-3.3-.7-2.8-1.2-4.6-4-4.7-4.2-.1-.2-1.1-1.5-1.1-2.8 0-1.3.7-2 1-2.3.2-.3.5-.3.7-.3h.5c.2 0 .4 0 .6.5l.8 2c.1.2.1.3 0 .5l-.3.4-.4.4c-.1.2-.3.3-.1.6.2.3.8 1.3 1.7 2.1 1.2 1 2.1 1.3 2.4 1.5.3.1.5.1.6-.1l.9-1.1c.2-.3.4-.2.6-.1l1.9.9c.3.1.5.2.5.3.1.2.1.8-.1 1.4z"/></svg>
+  </a>
+
+  <!-- Sacola -->
+  <div class="overlay" id="overlay"></div>
+  <aside class="drawer" id="drawer" aria-label="Sacola de compras">
+    <div class="drawer__head">
+      <h3>Minha sacola</h3>
+      <button class="icon-btn" id="cartClose" aria-label="Fechar">✕</button>
+    </div>
+    <div class="drawer__body" id="cartItems"></div>
+    <div class="drawer__foot" id="cartFoot">
+      <div class="drawer__total"><span>Total</span><strong id="cartTotal">R$ 0,00</strong></div>
+      <input type="text" id="custName" placeholder="Seu nome">
+      <select id="custDelivery">
+        <option value="Retirada na loja">Retirada na loja (Pátio 330)</option>
+        <option value="Combinar entrega">Combinar entrega pelo WhatsApp</option>
+      </select>
+      <button class="btn btn--primary btn--block" id="checkoutBtn">Finalizar pelo WhatsApp</button>
+      <button class="link-btn" id="clearCart">Esvaziar sacola</button>
+    </div>
+  </aside>
+
+  <!-- Modal do produto -->
+  <div class="modal" id="modal" aria-hidden="true">
+    <div class="modal__box" role="dialog" aria-modal="true">
+      <button class="icon-btn modal__close" id="modalClose" aria-label="Fechar">✕</button>
+      <div class="modal__img" id="modalImg"></div>
+      <div class="modal__info">
+        <span class="eyebrow" id="modalCat"></span>
+        <h3 id="modalName"></h3>
+        <div class="price" id="modalPrice"></div>
+        <p id="modalDesc"></p>
+        <div class="sizes-label">Tamanho</div>
+        <div class="sizes" id="modalSizes"></div>
+        <p class="modal__err" id="modalErr" hidden>Escolha um tamanho para continuar.</p>
+        <button class="btn btn--primary btn--block" id="modalAdd">Adicionar à sacola</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+  <script src="js/main.js"></script>
+</body>
+</html>
