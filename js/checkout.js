@@ -42,7 +42,7 @@
     let changed = false;
     cart = cart.filter(it => {
       const p = byId(it.id);
-      const max = p ? Number(p.stock[it.size]) || 0 : 0;
+      const max = p ? GM.stockOf(p, it.color || '', it.size) : 0;
       if (max <= 0) { changed = true; return false; }
       if (it.qty > max) { it.qty = max; changed = true; }
       return true;
@@ -67,12 +67,13 @@
     box.innerHTML = cart.map((it, idx) => {
       const p = byId(it.id);
       if (!p) return '';
-      const max = Number(p.stock[it.size]) || 0;
+      const max = GM.stockOf(p, it.color || '', it.size);
+      const img = GM.colorImage(p, it.color || '');
       return `<div class="sum">
-        <div class="sum__img" style="background:${gradient(p)}">${p.images[0] ? `<img src="${esc(p.images[0])}" alt="">` : ''}</div>
+        <div class="sum__img" style="background:${gradient(p)}">${img ? `<img src="${esc(img)}" alt="">` : ''}</div>
         <div>
           <div class="sum__name">${esc(p.name)}</div>
-          <div class="sum__meta">Tamanho ${esc(it.size)}</div>
+          <div class="sum__meta">${it.color ? esc(it.color) + ' · ' : ''}Tamanho ${esc(it.size)}</div>
           <div class="qty">
             <button type="button" data-act="minus" data-i="${idx}" aria-label="Diminuir">−</button>
             <span>${it.qty}</span>
@@ -223,7 +224,7 @@
         customer,
         delivery: { type, address },
         notes: $('#fNotes').value.trim(),
-        items: cart.map(i => ({ id: i.id, size: i.size, qty: i.qty }))
+        items: cart.map(i => ({ id: i.id, size: i.size, color: i.color || '', qty: i.qty }))
       });
       GM.ls.set('gm_last_order', res.code);
       location.href = res.url;
@@ -260,7 +261,7 @@
       const it = cart[+b.dataset.i];
       if (!it) return;
       const p = byId(it.id);
-      const max = p ? Number(p.stock[it.size]) || 0 : 0;
+      const max = p ? GM.stockOf(p, it.color || '', it.size) : 0;
       if (b.dataset.act === 'plus' && it.qty < max) it.qty++;
       if (b.dataset.act === 'minus') it.qty = Math.max(1, it.qty - 1);
       if (b.dataset.act === 'rm') cart.splice(+b.dataset.i, 1);

@@ -299,39 +299,11 @@
     </div>
   </aside>
 
-  <!-- Modal do produto -->
-  <div class="modal" id="modal" aria-hidden="true">
-    <div class="modal__box" role="dialog" aria-modal="true">
-      <button class="icon-btn modal__close" id="modalClose" aria-label="Fechar">✕</button>
-      <div class="modal__gallery">
-        <div class="modal__img" id="modalImg"></div>
-        <div class="thumbs" id="modalThumbs"></div>
-      </div>
-      <div class="modal__info">
-        <div class="modal__top">
-          <span class="eyebrow" id="modalCat"></span>
-          <button class="fav-btn" id="modalFav" aria-label="Favoritar">♡</button>
-        </div>
-        <h3 id="modalName"></h3>
-        <div class="price" id="modalPrice"></div>
-        <p id="modalDesc"></p>
-        <div class="sizes-label">Tamanho</div>
-        <div class="sizes" id="modalSizes"></div>
-        <p class="modal__hint" id="modalStock"></p>
-        <p class="modal__err" id="modalErr" hidden>Escolha um tamanho para continuar.</p>
-        <button class="btn btn--primary btn--block" id="modalAdd">Adicionar à sacola</button>
-        <div class="suggest" id="modalSuggestWrap" hidden>
-          <h4>Você também pode gostar</h4>
-          <div class="suggest__grid" id="modalSuggest"></div>
-        </div>
-      </div>
-    </div>
-  </div>
-
   <div class="toast" id="toast"></div>
 
   <script src="js/config.js"></script>
   <script src="js/api.js"></script>
+  <script src="js/shop.js"></script>
   <script src="js/main.js"></script>
 </body>
 </html>

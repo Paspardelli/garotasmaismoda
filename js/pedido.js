@@ -71,7 +71,7 @@
 
     const itemsHtml = (o.items || []).map(i => `<div class="sum">
       <div class="sum__img" style="background:linear-gradient(160deg,#b79a9e,#7a2e3b)">${i.image ? `<img src="${esc(i.image)}" alt="">` : ''}</div>
-      <div><div class="sum__name">${esc(i.name)}</div><div class="sum__meta">Tamanho ${esc(i.size)} · ${i.qty}x</div></div>
+      <div><div class="sum__name">${esc(i.name)}</div><div class="sum__meta">${i.color ? esc(i.color) + ' · ' : ''}Tamanho ${esc(i.size)} · ${i.qty}x</div></div>
       <div class="sum__price">${brl(i.price * i.qty)}</div></div>`).join('');
 
     const demoBox = (o.demo && o.status === 'aguardando_pagamento') ? `<div class="demo-pay">

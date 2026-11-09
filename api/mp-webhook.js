@@ -26,7 +26,7 @@ function validSignature(req, dataId, secret) {
 
 function orderEmailHtml(order, settings) {
   const rows = order.items.map(i =>
-    `<tr><td style="padding:6px 0">${i.qty}x ${escHtml(i.name)} (Tam. ${escHtml(i.size)})</td><td style="padding:6px 0;text-align:right">${brl(i.price * i.qty)}</td></tr>`
+    `<tr><td style="padding:6px 0">${i.qty}x ${escHtml(i.name)} (${i.color ? escHtml(i.color) + ', ' : ''}Tam. ${escHtml(i.size)})</td><td style="padding:6px 0;text-align:right">${brl(i.price * i.qty)}</td></tr>`
   ).join('');
   const where = order.delivery_type === 'retirada'
     ? `Retirada na loja: ${escHtml(settings.pickup_address || '')}`

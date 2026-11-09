@@ -52,35 +52,50 @@ module.exports = async (req, res) => {
     for (const it of b.items) {
       const id = String(it.id || '');
       const size = clean(it.size, 8);
+      const color = clean(it.color, 30);
       const qty = Number(it.qty);
       if (!UUID.test(id) || !size || !Number.isInteger(qty) || qty < 1 || qty > 10) {
         return send(res, 400, { error: 'Item inválido na sacola.' });
       }
-      const key = id + '|' + size;
-      merged.set(key, { id, size, qty: (merged.get(key)?.qty || 0) + qty });
+      const key = id + '|' + color + '|' + size;
+      merged.set(key, { id, size, color, qty: (merged.get(key)?.qty || 0) + qty });
     }
     const wanted = [...merged.values()];
 
     /* ---- Preços e estoque vêm do banco, nunca do navegador ---- */
     const ids = [...new Set(wanted.map(i => i.id))];
-    const prods = await sb(`products?id=in.(${ids.join(',')})&active=eq.true&select=id,name,price,stock,images`);
+    const prods = await sb(`products?id=in.(${ids.join(',')})&active=eq.true&select=id,name,price,stock,images,colors`);
     const byId = new Map((prods || []).map(p => [p.id, p]));
 
     const items = [];
     for (const w of wanted) {
       const p = byId.get(w.id);
       if (!p) return send(res, 409, { error: 'Uma das peças não está mais disponível. Atualize a sacola.' });
-      const available = Number(p.stock?.[w.size] ?? 0);
+
+      // peças com cores exigem uma cor válida; sem cores, a cor é ignorada
+      const colors = Array.isArray(p.colors) ? p.colors : [];
+      let colorObj = null;
+      if (colors.length) {
+        colorObj = colors.find(c => c.name === w.color);
+        if (!colorObj) return send(res, 409, { error: `Escolha a cor de ${p.name}. Atualize a sacola.` });
+      }
+      const color = colorObj ? colorObj.name : '';
+      const variant = color ? `${color}|${w.size}` : w.size;
+      const label = `${p.name} (${color ? color + ', ' : ''}${w.size})`;
+
+      const available = Number(p.stock?.[variant] ?? 0);
       if (available < w.qty) {
         return send(res, 409, {
           error: available > 0
-            ? `${p.name} (${w.size}): só temos ${available} em estoque.`
-            : `${p.name} (${w.size}) acabou de esgotar.`
+            ? `${label}: só temos ${available} em estoque.`
+            : `${label} acabou de esgotar.`
         });
       }
+      const imgs = p.images || [];
+      const image = (colorObj && Number.isInteger(colorObj.img) && imgs[colorObj.img]) || imgs[0] || null;
       items.push({
-        id: p.id, name: p.name, size: w.size, qty: w.qty,
-        price: Number(p.price), image: (p.images && p.images[0]) || null
+        id: p.id, name: p.name, size: w.size, color, variant, qty: w.qty,
+        price: Number(p.price), image
       });
     }
 
@@ -112,7 +127,7 @@ module.exports = async (req, res) => {
     const back = `${site}/pedido.html?code=${code}`;
     const mpItems = items.map(i => ({
       id: i.id,
-      title: `${i.name} (Tam. ${i.size})`.slice(0, 120),
+      title: `${i.name} (${i.color ? i.color + ', ' : ''}Tam. ${i.size})`.slice(0, 120),
       quantity: i.qty,
       unit_price: i.price,
       currency_id: 'BRL'

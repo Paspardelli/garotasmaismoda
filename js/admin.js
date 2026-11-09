@@ -49,7 +49,10 @@
   const stockSummary = p => {
     const t = GM.totalStock(p);
     if (t === 0) return '<span class="low">Esgotado</span>';
-    const txt = GM.sizesOf(p).map(s => `${esc(s)}:${Number(p.stock[s]) || 0}`).join(' · ');
+    const cols = GM.colorsOf(p);
+    const txt = cols.length
+      ? `${cols.length} ${cols.length === 1 ? 'cor' : 'cores'} · ${t} un.`
+      : GM.sizesOf(p).map(s => `${esc(s)}:${Number(p.stock[s]) || 0}`).join(' · ');
     return t <= 2 ? `<span class="low">${txt}</span>` : txt;
   };
   const toPrepare = () => S.orders.filter(o => ['pago', 'em_separacao'].includes(o.status));
@@ -184,8 +187,9 @@
     for (const it of o.items) {
       const p = fresh.find(x => x.id === it.id);
       if (!p) continue;
-      const cur = Number(p.stock[it.size]) || 0;
-      p.stock[it.size] = Math.max(0, cur + sign * it.qty);
+      const key = it.variant || it.size; // "Cor|Tam" ou só o tamanho
+      const cur = Number(p.stock[key]) || 0;
+      p.stock[key] = Math.max(0, cur + sign * it.qty);
       await GM.admin.saveProduct(p);
     }
   }
@@ -229,7 +233,7 @@
       ${o.notes ? `<div class="kv"><b>Observações</b><span>${esc(o.notes)}</span></div>` : ''}
 
       <div class="kv"><b>Itens</b></div>
-      ${o.items.map(i => `<div class="oitem"><span>${i.qty}x ${esc(i.name)} <small style="color:var(--muted)">(Tam. ${esc(i.size)})</small></span><span>${brl(i.price * i.qty)}</span></div>`).join('')}
+      ${o.items.map(i => `<div class="oitem"><span>${i.qty}x ${esc(i.name)} <small style="color:var(--muted)">(${i.color ? esc(i.color) + ', ' : ''}Tam. ${esc(i.size)})</small></span><span>${brl(i.price * i.qty)}</span></div>`).join('')}
       <div class="otot"><span>Subtotal</span><span>${brl(o.subtotal)}</span></div>
       <div class="otot"><span>Frete</span><span>${brl(o.shipping)}</span></div>
       <div class="otot final"><span>Total</span><span>${brl(o.total)}</span></div>
@@ -293,8 +297,24 @@
 
   function openProduct(id) {
     const p = id ? S.products.find(x => x.id === id) : null;
-    const F = { images: p ? [...p.images] : [] };
-    const stock = p ? p.stock : {};
+    // F guarda o que está sendo editado. Durante a edição o estoque usa "uid|Tam"
+    // (uid estável por cor); ao salvar vira "Nome da cor|Tam".
+    const F = { images: p ? [...p.images] : [], colors: [], stock: {} };
+    let uidN = 0;
+    if (p) {
+      const map = {};
+      (p.colors || []).forEach(c => {
+        const uid = 'c' + (uidN++);
+        map[c.name] = uid;
+        F.colors.push({ uid, name: c.name, hex: c.hex || '#cccccc', img: Number.isInteger(c.img) ? c.img : null });
+      });
+      Object.keys(p.stock || {}).forEach(k => {
+        const i = k.lastIndexOf('|');
+        if (i < 0 || !F.colors.length) { F.stock[k] = p.stock[k]; return; }
+        const uid = map[k.slice(0, i)];
+        if (uid) F.stock[uid + '|' + k.slice(i + 1)] = p.stock[k];
+      });
+    }
 
     openSheet(`
       <div class="sheet__head"><h2>${p ? 'Editar produto' : 'Novo produto'}</h2><button class="x" data-close aria-label="Fechar">✕</button></div>
@@ -316,11 +336,15 @@
           <label>Preço antigo <small>(opcional)</small><input type="text" id="pOld" inputmode="decimal" value="${moneyInput(p ? p.old_price : '')}" placeholder="379,80"></label>
         </div>
         <fieldset>
-          <legend>Estoque por tamanho</legend>
+          <legend>Cores <small>(opcional)</small></legend>
+          <p class="hint">Se a peça tem mais de uma cor, adicione aqui. O estoque passa a ser por cor e tamanho.</p>
+          <div id="pColors"></div>
+          <button type="button" class="btn btn--ghost btn--sm" id="pAddColor">+ Adicionar cor</button>
+        </fieldset>
+        <fieldset>
+          <legend>Estoque</legend>
           <p class="hint">Deixe em branco os tamanhos que a peça não tem. Zero = esgotado.</p>
-          <div class="sizes-grid">
-            ${GM.SIZE_ORDER.map(s => `<label><span>${esc(s)}</span><input type="number" min="0" inputmode="numeric" data-size="${esc(s)}" value="${stock[s] != null ? Number(stock[s]) : ''}"></label>`).join('')}
-          </div>
+          <div id="pStock"></div>
         </fieldset>
         <div>
           <div class="lbl">Fotos <span class="hint">(a primeira é a capa)</span></div>
@@ -349,15 +373,84 @@
             <button type="button" data-ph="del" data-i="${i}" aria-label="Remover">✕</button>
           </div>
         </div>`).join('');
+      renderColors(); // atualiza as opções de foto de cada cor
     };
+
+    const hexOk = h => (/^#[0-9a-f]{6}$/i.test(h || '') ? h : '#cccccc');
+    function renderColors() {
+      const photoOpts = sel => '<option value="">Sem foto</option>'
+        + F.images.map((_, i) => `<option value="${i}" ${sel === i ? 'selected' : ''}>Foto ${i + 1}</option>`).join('');
+      $('#pColors').innerHTML = F.colors.map((c, i) => `
+        <div class="crow" data-ci="${i}">
+          <input type="color" value="${hexOk(c.hex)}" data-cf="hex" aria-label="Cor">
+          <input type="text" value="${esc(c.name)}" data-cf="name" placeholder="Nome (ex.: Rosé)" maxlength="30">
+          <select data-cf="img" aria-label="Foto desta cor">${photoOpts(c.img)}</select>
+          <button type="button" class="x" data-crm="${i}" aria-label="Remover cor">✕</button>
+        </div>`).join('');
+      renderStock();
+    }
+    function renderStock() {
+      const grid = (prefix, title) => `${title ? `<div class="stock-title">${title}</div>` : ''}
+        <div class="sizes-grid">${GM.SIZE_ORDER.map(s => {
+          const k = prefix + s;
+          return `<label><span>${esc(s)}</span><input type="number" min="0" inputmode="numeric" data-sk="${esc(k)}" value="${F.stock[k] != null ? Number(F.stock[k]) : ''}"></label>`;
+        }).join('')}</div>`;
+      $('#pStock').innerHTML = F.colors.length
+        ? F.colors.map(c => `<div class="stock-color">${grid(c.uid + '|', `<i class="dotc" style="background:${hexOk(c.hex)}"></i>${esc(c.name || 'Nova cor')}`)}</div>`).join('')
+        : grid('', '');
+    }
     renderPhotos();
+
+    $('#pColors').addEventListener('input', e => {
+      const row = e.target.closest('.crow');
+      if (!row) return;
+      const c = F.colors[+row.dataset.ci];
+      if (e.target.dataset.cf === 'hex') c.hex = e.target.value;
+      if (e.target.dataset.cf === 'name') c.name = e.target.value.replace(/\|/g, '');
+    });
+    $('#pColors').addEventListener('change', e => {
+      const row = e.target.closest('.crow');
+      if (!row) return;
+      const c = F.colors[+row.dataset.ci];
+      if (e.target.dataset.cf === 'img') c.img = e.target.value === '' ? null : +e.target.value;
+      if (e.target.dataset.cf === 'name' || e.target.dataset.cf === 'hex') renderStock();
+    });
+    $('#pColors').addEventListener('click', e => {
+      const b = e.target.closest('[data-crm]');
+      if (!b) return;
+      const c = F.colors.splice(+b.dataset.crm, 1)[0];
+      Object.keys(F.stock).forEach(k => { if (k.startsWith(c.uid + '|')) delete F.stock[k]; });
+      renderColors();
+    });
+    $('#pAddColor').addEventListener('click', () => {
+      const uid = 'c' + (uidN++);
+      if (!F.colors.length) { // o estoque simples vira o estoque da primeira cor
+        const old = F.stock;
+        F.stock = {};
+        Object.keys(old).forEach(k => { F.stock[uid + '|' + k] = old[k]; });
+      }
+      F.colors.push({ uid, name: '', hex: '#d9a5a5', img: null });
+      renderColors();
+    });
+    $('#pStock').addEventListener('input', e => {
+      const k = e.target.dataset.sk;
+      if (!k) return;
+      if (e.target.value === '') delete F.stock[k];
+      else F.stock[k] = Math.max(0, parseInt(e.target.value, 10) || 0);
+    });
 
     $('#pPhotos').addEventListener('click', e => {
       const b = e.target.closest('[data-ph]');
       if (!b) return;
       const i = +b.dataset.i;
-      if (b.dataset.ph === 'del') F.images.splice(i, 1);
-      if (b.dataset.ph === 'left' && i > 0) [F.images[i - 1], F.images[i]] = [F.images[i], F.images[i - 1]];
+      if (b.dataset.ph === 'del') {
+        F.images.splice(i, 1);
+        F.colors.forEach(c => { if (c.img === i) c.img = null; else if (c.img > i) c.img--; });
+      }
+      if (b.dataset.ph === 'left' && i > 0) {
+        [F.images[i - 1], F.images[i]] = [F.images[i], F.images[i - 1]];
+        F.colors.forEach(c => { if (c.img === i) c.img = i - 1; else if (c.img === i - 1) c.img = i; });
+      }
       renderPhotos();
     });
     $('#pAddPhoto').addEventListener('click', () => $('#pFile').click());
@@ -383,9 +476,15 @@
       if (!name) return toast('Informe o nome do produto.');
       if (!(price > 0)) return toast('Informe um preço válido.');
       if (!isNaN(old) && old <= price) return toast('O preço antigo deve ser maior que o preço.');
+      const colors = F.colors.map(c => ({ uid: c.uid, name: c.name.trim(), hex: hexOk(c.hex), img: c.img }));
+      if (colors.some(c => !c.name)) return toast('Dê um nome para cada cor.');
+      if (new Set(colors.map(c => c.name.toLowerCase())).size !== colors.length) return toast('Há cores com o mesmo nome.');
       const st = {};
-      $$('[data-size]').forEach(inp => {
-        if (inp.value !== '') st[inp.dataset.size] = Math.max(0, parseInt(inp.value, 10) || 0);
+      Object.keys(F.stock).forEach(k => {
+        if (!colors.length) { if (!k.includes('|')) st[k] = F.stock[k]; return; }
+        const i = k.indexOf('|'); // "uid|Tam" -> "Nome|Tam"
+        const c = colors.find(x => x.uid === k.slice(0, i));
+        if (c) st[c.name + '|' + k.slice(i + 1)] = F.stock[k];
       });
       if (!Object.keys(st).length) return toast('Informe o estoque de pelo menos um tamanho.');
 
@@ -398,6 +497,7 @@
           category_slug: $('#pCat').value || null,
           price, old_price: isNaN(old) ? null : old,
           images: F.images, stock: st,
+          colors: colors.map(c => ({ name: c.name, hex: c.hex, img: c.img })),
           active: $('#pActive').checked, featured: $('#pFeat').checked, is_new: $('#pNew').checked
         });
         toast('Produto salvo');

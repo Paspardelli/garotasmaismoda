@@ -25,7 +25,7 @@ module.exports = async (req, res) => {
       total: o.total,
       first_name: String(o.customer_name || '').split(' ')[0],
       created_at: o.created_at,
-      items: (o.items || []).map(i => ({ name: i.name, size: i.size, qty: i.qty, price: i.price, image: i.image || null })),
+      items: (o.items || []).map(i => ({ name: i.name, size: i.size, color: i.color || '', qty: i.qty, price: i.price, image: i.image || null })),
       pay_url: o.status === 'aguardando_pagamento' ? o.pay_url : null,
       pickup_address: settings.pickup_address || '',
       whatsapp: settings.whatsapp || ''

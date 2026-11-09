@@ -16,8 +16,11 @@ create table if not exists public.categories (
 );
 
 -- ---------- Produtos ----------
--- stock = estoque por tamanho. Ex.: {"P":2,"M":1,"G":0}
--- (tamanho ausente = não existe; 0 = esgotado)
+-- stock = estoque por variação.
+--   sem cores:  {"P":2,"M":1,"G":0}
+--   com cores:  {"Rosé|M":2,"Rosé|G":1,"Preto|M":0}   (formato "Cor|Tamanho")
+-- (variação ausente = não existe; 0 = esgotado)
+-- colors = [{"name":"Rosé","hex":"#d9a5a5","img":0}]  (img = índice da foto)
 create table if not exists public.products (
   id uuid primary key default gen_random_uuid(),
   name text not null,
@@ -27,11 +30,14 @@ create table if not exists public.products (
   old_price numeric(10,2) check (old_price is null or old_price >= 0),
   images text[] not null default '{}',
   stock jsonb not null default '{}'::jsonb,
+  colors jsonb not null default '[]'::jsonb,
   active boolean not null default true,
   featured boolean not null default false,
   is_new boolean not null default false,
   created_at timestamptz not null default now()
 );
+-- (para bancos criados antes de existir o campo de cores)
+alter table public.products add column if not exists colors jsonb not null default '[]'::jsonb;
 create index if not exists products_active_idx on public.products (active, created_at desc);
 
 -- ---------- Pedidos ----------
@@ -81,16 +87,19 @@ language plpgsql security definer set search_path = public as $$
 declare
   o public.orders%rowtype;
   it jsonb;
+  k text;
 begin
   select * into o from public.orders where id = p_order for update;
   if not found or o.stock_applied then return; end if;
 
   for it in select * from jsonb_array_elements(o.items) loop
+    -- "variant" = "Cor|Tamanho" (ou só o tamanho, em peças sem cores)
+    k := coalesce(it->>'variant', it->>'size');
     update public.products
        set stock = jsonb_set(
              stock,
-             array[it->>'size'],
-             to_jsonb(greatest(coalesce((stock->>(it->>'size'))::int, 0) - (it->>'qty')::int, 0))
+             array[k],
+             to_jsonb(greatest(coalesce((stock->>k)::int, 0) - (it->>'qty')::int, 0))
            )
      where id = (it->>'id')::uuid;
   end loop;

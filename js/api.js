@@ -43,7 +43,22 @@
   const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
   const slugify = s => String(s).normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
   const sizeIdx = s => { const i = SIZE_ORDER.indexOf(s); return i < 0 ? 99 : i; };
-  const sizesOf = p => Object.keys(p.stock || {}).sort((a, b) => sizeIdx(a) - sizeIdx(b));
+  /* Estoque por variação: "Tam" (sem cores) ou "Cor|Tam" (com cores) */
+  const variantKey = (color, size) => (color ? color + '|' + size : size);
+  const sizePart = k => { const i = k.lastIndexOf('|'); return i < 0 ? k : k.slice(i + 1); };
+  const colorsOf = p => (Array.isArray(p.colors) ? p.colors : []);
+  const stockOf = (p, color, size) => Number((p.stock || {})[variantKey(color, size)]) || 0;
+  const sizesOf = p => [...new Set(Object.keys(p.stock || {}).map(sizePart))].sort((a, b) => sizeIdx(a) - sizeIdx(b));
+  const colorStock = (p, color) => Object.keys(p.stock || {}).reduce((s, k) => s + (k.startsWith(color + '|') ? Number(p.stock[k]) || 0 : 0), 0);
+  // tamanho disponível na cor escolhida (ou em qualquer cor, se ainda não escolheu)
+  const sizeAvailable = (p, size, color) => (colorsOf(p).length && !color
+    ? colorsOf(p).some(c => stockOf(p, c.name, size) > 0)
+    : stockOf(p, color, size) > 0);
+  const colorImage = (p, color) => {
+    const c = colorsOf(p).find(x => x.name === color);
+    const imgs = p.images || [];
+    return (c && Number.isInteger(c.img) && imgs[c.img]) || imgs[0] || '';
+  };
   const totalStock = p => Object.values(p.stock || {}).reduce((s, n) => s + (Number(n) || 0), 0);
   const discount = p => (p.old_price && p.old_price > p.price ? Math.round((1 - p.price / p.old_price) * 100) : 0);
   const randId = () => Math.random().toString(36).slice(2, 10);
@@ -54,7 +69,8 @@
       price: Number(p.price),
       old_price: p.old_price != null ? Number(p.old_price) : null,
       images: Array.isArray(p.images) ? p.images : [],
-      stock: p.stock && typeof p.stock === 'object' ? p.stock : {}
+      stock: p.stock && typeof p.stock === 'object' ? p.stock : {},
+      colors: Array.isArray(p.colors) ? p.colors : []
     };
   }
   function mergeSettings(rows) {
@@ -136,7 +152,7 @@
     { id: 'bolsas-e-acessorios', name: 'Bolsas e Acessórios', slug: 'bolsas-e-acessorios', position: 6 }
   ];
   const mk = (n, name, cat, price, old, stock, isNew, desc) => ({
-    id: 'demo-' + n, name, category_slug: cat, price, old_price: old, images: [], stock,
+    id: 'demo-' + n, name, category_slug: cat, price, old_price: old, images: [], colors: [], stock,
     active: true, featured: false, is_new: isNew, description: desc,
     created_at: new Date(Date.now() - n * 3600e3).toISOString()
   });
@@ -158,6 +174,19 @@
     mk(15, 'Bolsa Caramelo Média', 'bolsas-e-acessorios', 139.9, 219.9, { 'Único': 2 }, true, 'Bolsa média na cor caramelo com ferragem dourada.'),
     mk(16, 'Bolsa Off-White Clutch', 'bolsas-e-acessorios', 99.9, 149.9, { 'Único': 0 }, false, 'Clutch off-white que acompanha de looks casuais a festas.')
   ];
+  /* algumas peças de exemplo com cores (estoque por "Cor|Tamanho") */
+  const colorize = (id, defs, sizes, qty) => {
+    const p = DEMO_PRODUCTS.find(x => x.id === id);
+    p.colors = defs.map(d => ({ name: d[0], hex: d[1], img: null }));
+    p.stock = {};
+    defs.forEach((d, ci) => sizes.forEach((s, si) => { p.stock[d[0] + '|' + s] = qty[(ci + si) % qty.length]; }));
+  };
+  colorize('demo-1', [['Branco', '#f3efe8'], ['Rosé', '#d9a5a5']], ['M', 'G', 'G1', 'G2'], [2, 1, 0, 1]);
+  colorize('demo-3', [['Preto', '#1f1a1b'], ['Marinho', '#1d2a4d'], ['Vinho', '#6d1f2e']], ['M', 'G', 'G1', 'G2'], [2, 1, 1, 0]);
+  colorize('demo-6', [['Azul médio', '#5b7aa3'], ['Preto', '#1f1a1b']], ['P', 'M', 'G', 'G1', 'G2'], [2, 3, 1, 2, 1]);
+  colorize('demo-9', [['Branco', '#f3efe8'], ['Rosa', '#e7a3b4'], ['Verde', '#7a9a7e']], ['P', 'M', 'G', 'G1'], [1, 2, 2, 1]);
+  colorize('demo-12', [['Marsala', '#7a2e3b'], ['Azul', '#2c3d6b']], ['M', 'G', 'G1', 'G2'], [1, 1, 0, 1]);
+
   const demo = {
     cats() { let v = ls.get('gm_demo_cats', null); if (!v) { v = DEMO_CATS; ls.set('gm_demo_cats', v); } return v; },
     saveCats(v) { ls.set('gm_demo_cats', v); },
@@ -204,8 +233,12 @@
     for (const w of payload.items) {
       const p = products.find(x => x.id === w.id);
       if (!p) throw new Error('Uma das peças não está mais disponível.');
-      if ((p.stock[w.size] || 0) < w.qty) throw new Error(`${p.name} (${w.size}): estoque insuficiente.`);
-      items.push({ id: p.id, name: p.name, size: w.size, qty: w.qty, price: p.price, image: p.images[0] || null });
+      const np = normProduct(p);
+      const hasColors = colorsOf(np).length > 0;
+      if (hasColors && !colorsOf(np).some(c => c.name === w.color)) throw new Error(`Escolha a cor de ${p.name}.`);
+      const color = hasColors ? w.color : '';
+      if (stockOf(np, color, w.size) < w.qty) throw new Error(`${p.name} (${color ? color + ', ' : ''}${w.size}): estoque insuficiente.`);
+      items.push({ id: p.id, name: p.name, size: w.size, color, variant: variantKey(color, w.size), qty: w.qty, price: p.price, image: colorImage(np, color) || null });
     }
     const subtotal = items.reduce((s, i) => s + i.price * i.qty, 0);
     const free = Number(settings.free_shipping_from) > 0 && subtotal >= Number(settings.free_shipping_from);
@@ -247,7 +280,7 @@
       const products = demo.products();
       o.items.forEach(i => {
         const p = products.find(x => x.id === i.id);
-        if (p) p.stock[i.size] = Math.max(0, (p.stock[i.size] || 0) - i.qty);
+        if (p) { const k = i.variant || i.size; p.stock[k] = Math.max(0, (p.stock[k] || 0) - i.qty); }
       });
       o.stock_applied = true;
       demo.saveProducts(products);
@@ -309,7 +342,7 @@
       const payload = {
         name: p.name, description: p.description || '', category_slug: p.category_slug || null,
         price: Number(p.price), old_price: p.old_price ? Number(p.old_price) : null,
-        images: p.images || [], stock: p.stock || {},
+        images: p.images || [], stock: p.stock || {}, colors: p.colors || [],
         active: !!p.active, featured: !!p.featured, is_new: !!p.is_new
       };
       if (LIVE) {
@@ -384,6 +417,7 @@
 
   window.GM = {
     LIVE, C, ls, brl, esc, slugify, sizesOf, totalStock, discount, normProduct,
+    variantKey, colorsOf, stockOf, colorStock, sizeAvailable, colorImage,
     SIZE_ORDER, ORDER_STATUS, PAID_STATUSES, DEFAULT_SETTINGS,
     getCatalog, createOrder, getOrder, demoPay, uploadImage, auth, admin
   };
