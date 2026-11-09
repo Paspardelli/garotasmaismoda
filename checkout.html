@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="noindex">
+  <meta name="theme-color" content="#7a2e3b">
+  <title>Finalizar compra | Garota Mais</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Jost:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/checkout.css">
+</head>
+<body class="page-checkout">
+
+  <header class="header">
+    <div class="container header__inner ck-head">
+      <a href="index.html" class="ck-back">← Voltar à loja</a>
+      <a href="index.html" class="logo" aria-label="Garota Mais">
+        <span class="logo__name">GAROTA MAIS</span>
+        <span class="logo__tag">Seja Mais. Seja Você!</span>
+      </a>
+      <span class="ck-secure">🔒 Compra segura</span>
+    </div>
+  </header>
+
+  <main class="container ck">
+    <div class="demo-note" id="demoNote" hidden>Modo demonstração: o pagamento será simulado e nada é cobrado.</div>
+
+    <div class="ck__layout">
+      <section class="ck__main">
+        <h1>Finalizar compra</h1>
+
+        <form id="ckForm" novalidate autocomplete="on">
+
+          <div class="box">
+            <h2><span>1</span> Seus dados</h2>
+            <label class="field">
+              <span>Nome completo</span>
+              <input type="text" id="fName" name="name" autocomplete="name" required>
+              <em class="field__err" data-for="fName"></em>
+            </label>
+            <div class="row">
+              <label class="field">
+                <span>E-mail</span>
+                <input type="email" id="fEmail" name="email" autocomplete="email" inputmode="email" required>
+                <em class="field__err" data-for="fEmail"></em>
+              </label>
+              <label class="field">
+                <span>WhatsApp / Telefone</span>
+                <input type="tel" id="fPhone" name="tel" autocomplete="tel" inputmode="tel" placeholder="(19) 99999-9999" required>
+                <em class="field__err" data-for="fPhone"></em>
+              </label>
+            </div>
+          </div>
+
+          <div class="box">
+            <h2><span>2</span> Entrega</h2>
+            <div class="choice">
+              <label class="choice__opt">
+                <input type="radio" name="delivery" value="retirada" checked>
+                <div><strong>Retirar na loja</strong><small id="pickupInfo"></small></div>
+                <b>Grátis</b>
+              </label>
+              <label class="choice__opt">
+                <input type="radio" name="delivery" value="entrega">
+                <div><strong>Receber em casa</strong><small id="shipInfo"></small></div>
+                <b id="shipPrice"></b>
+              </label>
+            </div>
+
+            <div class="address" id="addressBox" hidden>
+              <div class="row">
+                <label class="field">
+                  <span>CEP</span>
+                  <input type="text" id="fCep" autocomplete="postal-code" inputmode="numeric" placeholder="00000-000">
+                  <em class="field__err" data-for="fCep"></em>
+                </label>
+                <span></span>
+              </div>
+              <label class="field">
+                <span>Rua / Avenida</span>
+                <input type="text" id="fStreet" autocomplete="address-line1">
+                <em class="field__err" data-for="fStreet"></em>
+              </label>
+              <div class="row">
+                <label class="field">
+                  <span>Número</span>
+                  <input type="text" id="fNumber" inputmode="numeric">
+                  <em class="field__err" data-for="fNumber"></em>
+                </label>
+                <label class="field">
+                  <span>Complemento <small>(opcional)</small></span>
+                  <input type="text" id="fComplement" autocomplete="address-line2">
+                </label>
+              </div>
+              <label class="field">
+                <span>Bairro</span>
+                <input type="text" id="fDistrict">
+                <em class="field__err" data-for="fDistrict"></em>
+              </label>
+              <div class="row row--city">
+                <label class="field">
+                  <span>Cidade</span>
+                  <input type="text" id="fCity" autocomplete="address-level2">
+                  <em class="field__err" data-for="fCity"></em>
+                </label>
+                <label class="field">
+                  <span>UF</span>
+                  <input type="text" id="fState" maxlength="2" autocomplete="address-level1">
+                  <em class="field__err" data-for="fState"></em>
+                </label>
+              </div>
+            </div>
+          </div>
+
+          <div class="box">
+            <h2><span>3</span> Pagamento</h2>
+            <p class="pay-info">Você será levada ao ambiente seguro do <strong>Mercado Pago</strong> para pagar com <strong>Pix</strong> ou <strong>cartão de crédito</strong>. Seus dados de cartão não passam pelo nosso site.</p>
+            <label class="field">
+              <span>Observações <small>(opcional)</small></span>
+              <textarea id="fNotes" rows="2" maxlength="500" placeholder="Ex.: posso retirar sábado à tarde"></textarea>
+            </label>
+            <label class="check">
+              <input type="checkbox" id="fTerms">
+              <span>Conferi minha sacola e os tamanhos das peças.</span>
+            </label>
+            <em class="field__err" data-for="fTerms"></em>
+          </div>
+
+          <div class="ck__error" id="ckError" role="alert" hidden></div>
+          <button type="submit" class="btn btn--primary btn--block btn--lg" id="ckSubmit">Ir para o pagamento · <span id="ckBtnTotal">R$ 0,00</span></button>
+          <p class="ck__legal">Ao continuar, você será redirecionada para concluir o pagamento. O pedido só é confirmado após a aprovação.</p>
+        </form>
+      </section>
+
+      <aside class="ck__summary">
+        <div class="box box--sticky">
+          <h2>Resumo do pedido</h2>
+          <div id="ckItems" class="sum-items"></div>
+          <dl class="totals">
+            <div><dt>Subtotal</dt><dd id="tSub">R$ 0,00</dd></div>
+            <div><dt>Frete</dt><dd id="tShip">R$ 0,00</dd></div>
+            <div class="totals__final"><dt>Total</dt><dd id="tTotal">R$ 0,00</dd></div>
+          </dl>
+          <p class="installments" id="tInst"></p>
+        </div>
+      </aside>
+    </div>
+
+    <div class="ck__empty" id="ckEmpty" hidden>
+      <h1>Sua sacola está vazia</h1>
+      <p>Escolha suas peças favoritas para continuar.</p>
+      <a href="index.html#catalogo" class="btn btn--primary">Ver produtos</a>
+    </div>
+  </main>
+
+  <div class="toast" id="toast"></div>
+
+  <script src="js/config.js"></script>
+  <script src="js/api.js"></script>
+  <script src="js/checkout.js"></script>
+</body>
+</html>

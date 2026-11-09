@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="robots" content="noindex, nofollow">
+  <meta name="theme-color" content="#4a1620">
+  <title>Painel | Garota Mais</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600;700&family=Jost:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../css/admin.css">
+</head>
+<body>
+
+  <!-- Login -->
+  <section class="login" id="login" hidden>
+    <form class="login__box" id="loginForm">
+      <div class="login__logo">GAROTA MAIS<small>Painel da loja</small></div>
+      <label>E-mail
+        <input type="email" id="lEmail" autocomplete="username" required>
+      </label>
+      <label>Senha
+        <input type="password" id="lPass" autocomplete="current-password" required>
+      </label>
+      <p class="err" id="lErr" hidden></p>
+      <button class="btn" type="submit" id="lBtn">Entrar</button>
+    </form>
+  </section>
+
+  <!-- App -->
+  <div class="app" id="app" hidden>
+    <aside class="side">
+      <div class="side__logo">GAROTA MAIS<small>Painel da loja</small></div>
+      <nav class="side__nav" id="sideNav"></nav>
+      <a class="side__link" href="../index.html" target="_blank" rel="noopener">Ver a loja ↗</a>
+      <button class="side__out" id="logout">Sair</button>
+    </aside>
+
+    <main class="main">
+      <div class="demo" id="demoBanner" hidden>
+        <strong>Modo demonstração:</strong> os dados ficam salvos só neste navegador e o pagamento é simulado.
+        Para usar de verdade, preencha o <code>js/config.js</code> (veja o PASSO-A-PASSO).
+      </div>
+      <header class="top">
+        <h1 id="viewTitle">Resumo</h1>
+        <button class="btn btn--sm btn--ghost" id="refresh">Atualizar</button>
+      </header>
+      <div id="view"></div>
+    </main>
+
+    <nav class="bottom" id="bottomNav"></nav>
+  </div>
+
+  <!-- Painel lateral / folha -->
+  <div class="sheet" id="sheet" aria-hidden="true">
+    <div class="sheet__box" id="sheetBox" role="dialog" aria-modal="true"></div>
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+  <script src="../js/config.js"></script>
+  <script src="../js/api.js"></script>
+  <script src="../js/admin.js"></script>
+</body>
+</html>

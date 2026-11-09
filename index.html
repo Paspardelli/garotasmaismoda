@@ -16,7 +16,7 @@
   <!-- Barra de avisos -->
   <div class="topbar">
     <div class="topbar__track">
-      <span>BLACK FRIDAY: LOJA TODA COM ATÉ 50% OFF</span>
+      <span id="topbarMain">BLACK FRIDAY: LOJA TODA COM ATÉ 50% OFF</span>
       <span>Retire na loja · Pátio 330, Americana-SP</span>
       <span>Tamanhos P ao G2</span>
       <span>Peça pelo WhatsApp</span>
@@ -268,6 +268,7 @@
       </div>
       <div>
         <h4>Atendimento</h4>
+        <a href="pedido.html">Acompanhar pedido</a>
         <a href="#contato">Contato</a>
         <a href="https://www.instagram.com/garotamaismodas" target="_blank" rel="noopener">Instagram</a>
         <a href="#" id="footerWhats" target="_blank" rel="noopener">WhatsApp</a>
@@ -290,13 +291,10 @@
     </div>
     <div class="drawer__body" id="cartItems"></div>
     <div class="drawer__foot" id="cartFoot">
-      <div class="drawer__total"><span>Total</span><strong id="cartTotal">R$ 0,00</strong></div>
-      <input type="text" id="custName" placeholder="Seu nome">
-      <select id="custDelivery">
-        <option value="Retirada na loja">Retirada na loja (Pátio 330)</option>
-        <option value="Combinar entrega">Combinar entrega pelo WhatsApp</option>
-      </select>
-      <button class="btn btn--primary btn--block" id="checkoutBtn">Finalizar pelo WhatsApp</button>
+      <div class="shipbar" id="shipBar" hidden></div>
+      <div class="drawer__total"><span>Subtotal</span><strong id="cartTotal">R$ 0,00</strong></div>
+      <small class="drawer__note">Frete e forma de pagamento no próximo passo.</small>
+      <a href="checkout.html" class="btn btn--primary btn--block" id="checkoutBtn">Finalizar compra</a>
       <button class="link-btn" id="clearCart">Esvaziar sacola</button>
     </div>
   </aside>
@@ -305,22 +303,35 @@
   <div class="modal" id="modal" aria-hidden="true">
     <div class="modal__box" role="dialog" aria-modal="true">
       <button class="icon-btn modal__close" id="modalClose" aria-label="Fechar">✕</button>
-      <div class="modal__img" id="modalImg"></div>
+      <div class="modal__gallery">
+        <div class="modal__img" id="modalImg"></div>
+        <div class="thumbs" id="modalThumbs"></div>
+      </div>
       <div class="modal__info">
-        <span class="eyebrow" id="modalCat"></span>
+        <div class="modal__top">
+          <span class="eyebrow" id="modalCat"></span>
+          <button class="fav-btn" id="modalFav" aria-label="Favoritar">♡</button>
+        </div>
         <h3 id="modalName"></h3>
         <div class="price" id="modalPrice"></div>
         <p id="modalDesc"></p>
         <div class="sizes-label">Tamanho</div>
         <div class="sizes" id="modalSizes"></div>
+        <p class="modal__hint" id="modalStock"></p>
         <p class="modal__err" id="modalErr" hidden>Escolha um tamanho para continuar.</p>
         <button class="btn btn--primary btn--block" id="modalAdd">Adicionar à sacola</button>
+        <div class="suggest" id="modalSuggestWrap" hidden>
+          <h4>Você também pode gostar</h4>
+          <div class="suggest__grid" id="modalSuggest"></div>
+        </div>
       </div>
     </div>
   </div>
 
   <div class="toast" id="toast"></div>
 
+  <script src="js/config.js"></script>
+  <script src="js/api.js"></script>
   <script src="js/main.js"></script>
 </body>
 </html>

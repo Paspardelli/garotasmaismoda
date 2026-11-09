@@ -1,0 +1,7 @@
+{
+  "name": "garota-mais",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Loja Garota Mais: vitrine, checkout com Mercado Pago e painel admin",
+  "engines": { "node": ">=20" }
+}

@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="noindex">
+  <meta name="theme-color" content="#7a2e3b">
+  <title>Meu pedido | Garota Mais</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Jost:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/checkout.css">
+</head>
+<body class="page-checkout">
+
+  <header class="header">
+    <div class="container header__inner ck-head">
+      <a href="index.html" class="ck-back">← Voltar à loja</a>
+      <a href="index.html" class="logo" aria-label="Garota Mais">
+        <span class="logo__name">GAROTA MAIS</span>
+        <span class="logo__tag">Seja Mais. Seja Você!</span>
+      </a>
+      <span class="ck-secure">🔒 Compra segura</span>
+    </div>
+  </header>
+
+  <main class="container ck">
+    <div class="order" id="orderRoot">
+      <div class="order__hero"><p>Carregando seu pedido…</p></div>
+    </div>
+  </main>
+
+  <div class="toast" id="toast"></div>
+
+  <script src="js/config.js"></script>
+  <script src="js/api.js"></script>
+  <script src="js/pedido.js"></script>
+</body>
+</html>
