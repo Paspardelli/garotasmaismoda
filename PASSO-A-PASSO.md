@@ -8,6 +8,8 @@ Abra `index.html` pela Vercel (ou GitHub Pages). Faça uma compra de teste: o pa
 ## 1. Supabase (banco, login e fotos)
 1. Acesse https://supabase.com e crie um projeto chamado `garotamais` (região São Paulo).
 2. Menu **SQL Editor** > **New query** > cole todo o conteúdo de `supabase/schema.sql` > **Run**.
+   - Já usava o banco antes das cores? Rode o `schema.sql` de novo: ele só acrescenta a coluna `colors`, sem apagar nada.
+   - Cores: em **Produtos** no painel, adicione as cores de cada peça e preencha o estoque por cor e tamanho.
 3. **Authentication** > **Sign In / Providers** > desligue **Allow new users to sign up** (só você deve entrar no painel).
 4. **Authentication** > **Users** > **Add user** > crie o e-mail e a senha da dona da loja (marque *Auto Confirm User*).
 5. **Project Settings** > **API**: copie
