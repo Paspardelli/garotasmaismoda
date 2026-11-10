@@ -190,6 +190,7 @@
     if (top && s.topbar_text) top.textContent = s.topbar_text;
     const hello = waLink('Olá! Vim pelo site da Garota Mais e gostaria de atendimento.');
     ['whatsFloat', 'contactWhats', 'footerWhats'].forEach(id => { const a = document.getElementById(id); if (a) a.href = hello; });
+    const mw = document.querySelector('.mnav__whats'); if (mw) mw.href = hello;
     const vip = $('#vipLink');
     if (vip) vip.href = s.vip_link || waLink('Olá! Quero entrar no Grupo VIP da Garota Mais.');
   }
@@ -201,13 +202,34 @@
     if (y) y.textContent = new Date().getFullYear();
     renderCart();
 
-    const nav = $('#nav');
-    const closeNav = () => { nav.classList.remove('open'); $('#overlay').classList.remove('show'); };
-    $('#menuToggle').addEventListener('click', () => {
-      nav.classList.toggle('open');
-      $('#overlay').classList.toggle('show', nav.classList.contains('open'));
-    });
-    $$('#nav a').forEach(a => a.addEventListener('click', closeNav));
+    /* menu lateral (celular): montado fora do cabeçalho, a partir dos links do #nav */
+    const mnav = document.createElement('aside');
+    mnav.className = 'mnav';
+    mnav.id = 'mnav';
+    mnav.setAttribute('aria-label', 'Menu');
+    const links = $$('#nav a').map(a =>
+      `<a href="${a.getAttribute('href')}" class="${a.classList.contains('nav__hot') ? 'hot' : ''}">${a.textContent}<i aria-hidden="true">›</i></a>`).join('');
+    mnav.innerHTML = `
+      <div class="mnav__head">
+        <span class="logo__name">GAROTA MAIS</span>
+        <button class="icon-btn" id="mnavClose" aria-label="Fechar menu">
+          <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M5 5l14 14M19 5L5 19"/></svg>
+        </button>
+      </div>
+      <nav class="mnav__links">${links}</nav>
+      <div class="mnav__extra">
+        <a href="pedido.html">Acompanhar pedido</a>
+        <a href="${waLink('Olá! Vim pelo site da Garota Mais e gostaria de atendimento.')}" target="_blank" rel="noopener" class="mnav__whats">Falar no WhatsApp</a>
+        <a href="https://www.instagram.com/garotamaismodas" target="_blank" rel="noopener">Instagram @garotamaismodas</a>
+      </div>`;
+    document.body.appendChild(mnav);
+    const openNav = () => { mnav.classList.add('open'); $('#overlay').classList.add('show'); document.body.style.overflow = 'hidden'; };
+    const closeNav = () => { mnav.classList.remove('open'); $('#overlay').classList.remove('show'); document.body.style.overflow = ''; };
+    $('#menuToggle').addEventListener('click', openNav);
+    $('#mnavClose').addEventListener('click', closeNav);
+    mnav.addEventListener('click', e => { if (e.target.closest('.mnav__links a, .mnav__extra a')) closeNav(); });
+    document.addEventListener('keydown', e => { if (e.key === 'Escape') closeNav(); });
+    window.matchMedia('(min-width:821px)').addEventListener('change', e => { if (e.matches) closeNav(); });
 
     const bar = $('#searchbar');
     const inp = $('#searchInput');
